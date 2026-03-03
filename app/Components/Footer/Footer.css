@@ -1,0 +1,21 @@
+h3 span::after{
+    content: '.';
+    background-color: #fff;
+    position: absolute;
+    right: 0;
+    width: 2px;
+    height: 2px;
+}
+
+h3 span::before{
+    content: '.';
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    width: 2px;
+    height: 2px;
+}
+
+h3:hover span {
+    width: 50%;
+}

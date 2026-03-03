@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+@plugin "tailwind-scrollbar";
+
+:root {
+  --hover-color: #f0c14b;
+  --color-bg-main: #0a0a0f;
+  --color-maim-2: rgba(245, 34, 45, 1);
+
+  --color-bg-secondary: #12121a;
+  --color-bg-main-2: #0a0a0f4b;
+  --color-bg-secondary-2: #12121a3d;
+
+  --color-primary: #a953f3;
+  --color-primary-2: rgba(243, 83, 200, 1);
+
+  --color-p: rgba(255, 255, 255, 0.6);
+  --aniong-color: linear-gradient(
+    to right,
+    var(--hover-color),
+    var(--color-primary)
+  );
+  --gradient-color-2: linear-gradient(
+    to right,
+    var(--color-bg-main-2),
+    var(--color-primary-2)
+  );
+  --body-linear: linear-gradient(
+    to right,
+    var(--color-bg-main),
+    var(--color-bg-secondary)
+  );
+  --nav-linear: linear-gradient(
+    to right,
+    var(--color-bg-main-2),
+    var(--color-bg-secondary-2)
+  );
+}
+
+* {
+  scroll-behavior: smooth;
+  /* cursor: pointer; */
+}
+
+body {
+  background: var(--body-linear);
+}
+
+nav,
+.all {
+  z-index: 40;
+}
+
+h1 span,
+.about-description h1,
+.description h1 {
+  background: var(--aniong-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--font-orbitron);
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron);
+}
+
+.discover a,
+.about-description a,
+.tabs .active,
+.btn button {
+  background: var(--aniong-color);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+label {
+  color: var(--color-p);
+}
+
+.open {
+  z-index: 999;
+}
+
+::placeholder {
+  color: var(--color-p);
+}
+
+input:focus {
+  outline: none;
+}
+
+:where(h1):not(.description h1):hover span {
+  width: 50%;
+}
+.animate-floating {
+  animation: floating-subtle 3s ease-in-out infinite;
+  -webkit-animation: floating-subtle 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes floating-subtle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    -webkit-transform: translateY(0) rotate(0deg);
+    -moz-transform: translateY(0) rotate(0deg);
+    -ms-transform: translateY(0) rotate(0deg);
+    -o-transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+    -webkit-transform: translateY(-10px) rotate(2deg);
+    -moz-transform: translateY(-10px) rotate(2deg);
+    -ms-transform: translateY(-10px) rotate(2deg);
+    -o-transform: translateY(-10px) rotate(2deg);
+  }
+}

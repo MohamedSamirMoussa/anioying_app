@@ -1,0 +1,42 @@
+h1 {
+  position: relative;
+}
+
+.close {
+  width: fit-content;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+}
+.tabs,
+.players,
+.mod,
+.login .card,
+.htj , .ip {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabs button.active {
+  background: var(--aniong-color);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  -webkit-border-radius: 0.75rem;
+  -moz-border-radius: 0.75rem;
+  -ms-border-radius: 0.75rem;
+  -o-border-radius: 0.75rem;
+}
+
+.tabs button {
+  color: var(--color-p);
+  text-transform: uppercase;
+}
+
+
+.mod span {
+  color: var(--color-p);
+}
+

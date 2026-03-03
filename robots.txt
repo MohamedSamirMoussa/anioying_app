@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /favicon.ico
+Allow: /logo.png
+
+Sitemap: https://www.anoing.com/sitemap.xml

@@ -1,0 +1,8 @@
+#HTJ span {
+    color:#fff;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    width: 25px !important;
+    height: 25px;
+}

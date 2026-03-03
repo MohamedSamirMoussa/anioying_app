@@ -1,0 +1,46 @@
+nav,
+.mobile ul {
+  background: var(--nav-linear);
+}
+
+.logo {
+  background: var(--aniong-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.links li {
+  position: relative;
+}
+
+.links li a::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 2px;
+  opacity: 0;
+  background: var(--active-gradient, linear-gradient(to right, #fff, #ccc));
+  transition: opacity 0.3s ease-out;
+}
+
+.links li a:hover::after {
+  opacity: 1;
+}
+
+.links li .logo:hover::after {
+  opacity: 0;
+}
+
+.links li.active a::after {
+  opacity: 1;
+}
+
+.active {
+  color: var(--hover-color);
+}
+
+.mobil ul {
+  z-index: 9999;
+}
