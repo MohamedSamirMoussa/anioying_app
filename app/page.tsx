@@ -7,7 +7,7 @@ const About = React.lazy(() => import("./Components/About/About"));
 const OptionalMods = React.lazy(() => import("./Components/OptionalMods/OptionalMods"));
 const Community = React.lazy(() => import("./Components/Community/Community"));
 const DiscordChannel = React.lazy(() => import("./Components/DiscordChannel/DiscordChannel"));
-
+const DashboardButton = React.lazy(() => import("./Components/DashboardButton/DashboardButton"));
 const Main = () => {
 
   return (
@@ -18,6 +18,7 @@ const Main = () => {
       <OptionalMods />
       <Community />
       <DiscordChannel />
+      <DashboardButton />
     </React.Suspense>
   );
 };
