@@ -1,3 +1,4 @@
+"use client";
 import {
   faHardDrive,
   faMemory,
@@ -39,6 +40,11 @@ const Servers = ({ mcServers }: ServersProps) => {
     return parseFloat(val?.toString().replace(/[^\d.-]/g, "")) || 0;
   };
 
+  const getSafeNumber = (val: any) => {
+    const num = extractNumber(String(val || "0"));
+    return isNaN(num) ? 0 : num;
+  };
+
   const currentStats = Array.isArray(mcServers)
     ? mcServers.find((s: any) => {
         const apiName = cleanName(s.name);
@@ -47,27 +53,30 @@ const Servers = ({ mcServers }: ServersProps) => {
       })
     : null;
 
+  const diskUsage = getSafeNumber(currentStats?.usage?.disk);
+  const memUsage = getSafeNumber(currentStats?.usage?.memory);
+  const cpuUsage = getSafeNumber(currentStats?.usage?.cpu);
+
+  const MAX_DISK_MB = 102400;
+  const MAX_MEM_MB = 16384;
+
   const statsConfig = [
     {
       label: "Disk Space",
-      val:
-        (extractNumber(String(currentStats?.usage?.disk)) / 1024).toFixed(2) +
-        " GB",
-      pct: (extractNumber(String(currentStats?.usage?.disk)) / 10240) * 100,
+      val: (diskUsage / 1024).toFixed(2) + " GB",
+      pct: (diskUsage / MAX_DISK_MB) * 100,
       icon: faHardDrive,
     },
     {
       label: "Memory RAM",
-      val:
-        (extractNumber(String(currentStats?.usage?.memory)) / 1024).toFixed(2) +
-        " GB",
-      pct: (extractNumber(String(currentStats?.usage?.memory)) / 16384) * 100,
+      val: (memUsage / 1024).toFixed(2) + " GB",
+      pct: (memUsage / MAX_MEM_MB) * 100,
       icon: faMemory,
     },
     {
       label: "CPU Performance",
-      val: String(currentStats?.usage?.cpu) || "0%",
-      pct: extractNumber(String(currentStats?.usage?.cpu)),
+      val: `${cpuUsage.toFixed(1)}%`,
+      pct: cpuUsage,
       icon: faMicrochip,
     },
   ];
@@ -89,9 +98,8 @@ const Servers = ({ mcServers }: ServersProps) => {
 
     if (confirmed) {
       const loadingToast = toast.loading(`Wiping data for node ${themeKey}...`);
-
       try {
-        const res = await dispatch(deleteServerThunk(themeKey)).unwrap();
+        await dispatch(deleteServerThunk(themeKey)).unwrap();
         toast.success(`${serverDisplayName} data wiped successfully! ✅`, {
           id: loadingToast,
         });
@@ -105,7 +113,6 @@ const Servers = ({ mcServers }: ServersProps) => {
 
   return (
     <div className="w-full">
-      {/* Header Section */}
       <div className="my-5 flex items-center gap-4">
         <span
           className="w-14 h-14 flex justify-center items-center rounded-2xl text-2xl transition-all duration-500 shadow-xl"
@@ -118,7 +125,6 @@ const Servers = ({ mcServers }: ServersProps) => {
         </p>
       </div>
 
-      {/* Main Dashboard Card */}
       <div className="p-6 lg:p-10 h-full w-full bg-white/[0.05] backdrop-blur-2xl rounded-[2.5rem] border border-white/10 shadow-2xl">
         <div className="header">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
@@ -154,7 +160,6 @@ const Servers = ({ mcServers }: ServersProps) => {
             </select>
           </div>
 
-          {/* Stats Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {currentStats ? (
               statsConfig.map((stat, i) => (
@@ -181,11 +186,11 @@ const Servers = ({ mcServers }: ServersProps) => {
                       </p>
                     </div>
                   </div>
-                  <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/5">
+                  <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/5 relative">
                     <div
-                      className="h-full transition-all duration-700 ease-out"
+                      className="h-full transition-all duration-1000 ease-out"
                       style={{
-                        width: `${Math.min(stat.pct, 100)}%`,
+                        width: `${Math.max(0, Math.min(stat.pct || 0, 100))}%`,
                         background: currentTheme.gradient,
                       }}
                     />
@@ -200,7 +205,6 @@ const Servers = ({ mcServers }: ServersProps) => {
           </div>
         </div>
 
-        {/* Server Details Table */}
         <div className="body bg-black/40 w-full mt-10 p-6 rounded-[2rem] border border-white/5">
           <h4 className="mb-6 ps-2 font-bold font-orbitron text-sm text-white/50 tracking-widest uppercase">
             Active Node Details
@@ -219,42 +223,38 @@ const Servers = ({ mcServers }: ServersProps) => {
                     Status
                   </th>
                   <th className="px-6 py-4 font-semibold border-b border-white/10 text-center">
-                    Wipe Leaderboard
+                    Wipe Data
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-sm">
-                {mcServers?.map((serv, index) => {
-                  return (
-                    <tr
-                      key={index}
-                      className="hover:bg-white/[0.02] transition-colors group"
-                    >
-                      <td className="px-6 py-4 text-white font-medium font-orbitron">
-                        {serv.name || "Unknown"}
-                      </td>
-                      <td className="px-6 py-4 text-white/50 font-mono">
-                        {`cf2.anoing.com:${serv.port}`}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1  ${serv.usage.status === "running" ? "text-green-500 border border-green-500/20 bg-green-500/10" : "text-red-500 border border-red-500/20 bg-red-500/10"} rounded-full text-[10px] font-bold uppercase`}
-                        >
-                          {serv?.usage?.status || "Online"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => handleDeleteByName(serv.name)}
-                          className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/20 transition-all transform hover:scale-110 border border-red-500/0 hover:border-red-500/30"
-                          title="Wipe Server Data"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {mcServers?.map((serv, index) => (
+                  <tr
+                    key={index}
+                    className="hover:bg-white/[0.02] transition-colors group"
+                  >
+                    <td className="px-6 py-4 text-white font-medium font-orbitron">
+                      {serv.name || "Unknown"}
+                    </td>
+                    <td className="px-6 py-4 text-white/50 font-mono">{`cf2.anoing.com:${serv.port}`}</td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 ${serv.usage.status === "running" ? "text-green-500 border border-green-500/20 bg-green-500/10" : "text-red-500 border border-red-500/20 bg-red-500/10"} rounded-full text-[10px] font-bold uppercase`}
+                      >
+                        {serv?.usage?.status || "Online"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleDeleteByName(serv.name)}
+                        className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500/40 hover:text-red-500 hover:bg-red-500/20 transition-all transform hover:scale-110 border border-red-500/0 hover:border-red-500/30"
+                        title="Wipe Server Data"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

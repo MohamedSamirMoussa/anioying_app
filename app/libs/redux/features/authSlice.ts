@@ -135,7 +135,7 @@ export const checkAuthThunk = createAsyncThunk<any, void>(
   async (_, { rejectWithValue }) => {
     try {
       // تغيير إلى get
-      const { data } = await api.get("/auth/check-auth"); 
+      const { data } = await api.get("/auth/check-auth");
       return data;
     } catch (error: unknown) {
       return handleThunkError(error, rejectWithValue);
@@ -188,10 +188,10 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // عند نجاح أي عملية تسجيل دخول أو فحص
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.user = action.payload.result || action.payload;
         state.isLogged = true;
+        state.error = null;
       })
       .addCase(signinWithGoogleThunk.fulfilled, (state, action) => {
         state.user = action.payload.result || action.payload;

@@ -3,34 +3,33 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("access_token")?.value;
-
   const pathname = req.nextUrl.pathname;
-  const publicRoutes = ["/auth", "/", "/gallery" , "/leaderboard"];
+  
+  const publicRoutes = ["/auth", "/", "/gallery", "/leaderboard"];
+  const isPublicRoute = publicRoutes.some(route => pathname === route);
 
-  if (!accessToken && !publicRoutes.includes(pathname)) {
+  if (!accessToken && !isPublicRoute) {
     return NextResponse.redirect(new URL("/auth", req.url));
   }
 
-  let decoded: any = null;
   if (accessToken) {
     try {
-      decoded = jwtDecode(accessToken);
+      const decoded: any = jwtDecode(accessToken);
+      
+      if (isPublicRoute && pathname === "/auth") {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+
+      if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
+        if (decoded.role !== "admin" && decoded.role !== "super") {
+          return NextResponse.redirect(new URL("/", req.url));
+        }
+      }
     } catch (err) {
-      return NextResponse.redirect(new URL("/auth", req.url));
+      const response = NextResponse.redirect(new URL("/auth", req.url));
+      response.cookies.delete("access_token");
+      return response;
     }
-  }
-
-  if (
-    pathname.startsWith("/dashboard") &&
-    decoded &&
-    decoded.role !== "admin" &&
-    decoded.role !== "super"
-  ) {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  if (accessToken && publicRoutes.includes(pathname)) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();

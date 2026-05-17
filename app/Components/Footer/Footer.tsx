@@ -1,16 +1,18 @@
 "use client";
 import "./Footer.css";
 import { themes } from "@/app/hooks/themes";
-import { RootState } from "@/app/libs/redux/store";
+import { AppDispatch, RootState } from "@/app/libs/redux/store";
 import { faCode, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector, useDispatch } from "react-redux"; // تأكد من استيراد useDispatch
+import { useSelector, useDispatch } from "react-redux"; 
 import { usePathname } from "next/navigation";
 import useSectionEditor from "@/app/hooks/useSectionEditor";
 import { setSectionName } from "@/app/libs/redux/features/editSlice";
+import { useEffect } from "react";
+import { getPageContentThunk } from "@/app/libs/redux/features/pageContentSlice";
 
 const Footer = () => {
-  const dispatch = useDispatch();
+  const dispatch:AppDispatch = useDispatch();
   const activeTab = useSelector((state: RootState) => state.theme.activeServer);
   const theme = themes[activeTab] || themes["1"];
   const pathname = usePathname();
@@ -18,6 +20,11 @@ const Footer = () => {
   const section = useSelector(
     (state: RootState) => state.pageContent.sectionData,
   );
+
+    useEffect(() => {
+    dispatch(getPageContentThunk("footer"));
+  }, [dispatch]);
+
   const sectionData = section?.["footer"];
 
   const { isEditing, formik, isSectionActive } = useSectionEditor({

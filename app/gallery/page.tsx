@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../libs/redux/store";
 import { themes } from "../hooks/themes";
@@ -17,6 +17,7 @@ import memories from "../../public/Memories.png";
 import useSectionEditor from "../hooks/useSectionEditor";
 import { IUser } from "../types/auth.types";
 import { setEditing, setSectionName } from "../libs/redux/features/editSlice";
+import { getPageContentThunk } from "../libs/redux/features/pageContentSlice";
 
 // Lazy loading components
 const CreateBlog = React.lazy(
@@ -33,9 +34,13 @@ const Page = () => {
 
   const { user } = useSelector((state: RootState) => state.auth);
 
+
+  
   const isLogged = user?.isLogged;
   const { sectionData } = useSelector((state: RootState) => state.pageContent);
   const blogs = useSelector((s: RootState) => s.blogs.blog);
+
+
 
   // --- Section Editor Hook ---
   const { formik, isSectionActive, isEditing, dispatch } = useSectionEditor({
@@ -44,6 +49,10 @@ const Page = () => {
       showImages: sectionData?.gallery?.showImages ?? true,
     },
   });
+
+    useEffect(() => {
+    dispatch(getPageContentThunk("gallery"));
+  }, [dispatch]);
 
   const shouldShowImages = formik.values.showImages || isSectionActive;
 

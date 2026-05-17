@@ -172,7 +172,7 @@ const Blogs = ({ theme, isLogged, blogs, user }: any) => {
                         border: "1px solid rgba(255,255,255,0.1)",
                       }}
                     >
-                      {blog.userId?.username || "ADMIN"}
+                      {blog.userId?.username.split(" ")[0] || "ADMIN"}
                     </span>
                   </div>
                 </div>

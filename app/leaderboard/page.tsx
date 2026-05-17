@@ -122,7 +122,7 @@ export default function Leaderboard() {
             </div>
           </div>
 
-          <div className="left flex flex-col items-center gap-6 z-50 lg:w-1/2">
+          <div className="left flex flex-col items-center gap-6 z-50 lg:w-1/2 w-full">
             <LiveSearch
               currentTheme={currentTheme}
               onSearch={(val) => setSearchTerm(val)}

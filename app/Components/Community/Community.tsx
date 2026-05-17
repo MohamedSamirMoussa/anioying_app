@@ -5,34 +5,57 @@ import "./Community.css";
 import { RootState, AppDispatch } from "@/app/libs/redux/store";
 import useSectionEditor from "@/app/hooks/useSectionEditor";
 import { setSectionName } from "@/app/libs/redux/features/editSlice";
-import React, { useMemo } from "react";
+import {  useEffect, useMemo } from "react";
 import { FieldArray, FormikProvider } from "formik";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { getPageContentThunk } from "@/app/libs/redux/features/pageContentSlice";
 
 const Community = () => {
   const dispatch: AppDispatch = useDispatch();
   const { activeServer } = useSelector((state: RootState) => state.theme);
   const theme = themes[activeServer] || themes["1"];
-  
-  const section = useSelector((state: RootState) => state.pageContent.sectionData);
+
+  useEffect(() => {
+    dispatch(getPageContentThunk("community"));
+  }, [dispatch]);
+
+  const section = useSelector(
+    (state: RootState) => state.pageContent.sectionData,
+  );
   const sectionData = section["community"];
   const homeSection = section["home"];
 
   const currentIP = useMemo(() => {
     const homeServerData = homeSection?.servers?.[activeServer];
     const isVisible = homeServerData?.showIP ?? true;
-    
+
     if (!isVisible) return "Coming Soon...";
     return homeServerData?.ipAddress || "play.anoing.com";
   }, [homeSection, activeServer]);
 
   const defaultSteps = [
-    { title: "Get a Launcher", description: "Download and install a modded Minecraft launcher." },
-    { title: "Find Modpack", description: "Search for All The Mods 10 in your launcher." },
-    { title: "Install Modpack", description: "Click Install and wait for the files to download." },
-    { title: "Allocate RAM", description: "ATM10 is hefty! Allocate at least 8-10GB RAM for smooth play." },
-    { title: "Launch & Add Server", description: "Launch Minecraft, Go to Multiplayer, and Click Add Server." },
+    {
+      title: "Get a Launcher",
+      description: "Download and install a modded Minecraft launcher.",
+    },
+    {
+      title: "Find Modpack",
+      description: "Search for All The Mods 10 in your launcher.",
+    },
+    {
+      title: "Install Modpack",
+      description: "Click Install and wait for the files to download.",
+    },
+    {
+      title: "Allocate RAM",
+      description:
+        "ATM10 is hefty! Allocate at least 8-10GB RAM for smooth play.",
+    },
+    {
+      title: "Launch & Add Server",
+      description: "Launch Minecraft, Go to Multiplayer, and Click Add Server.",
+    },
   ];
 
   const { isEditing, formik, isSectionActive } = useSectionEditor({
@@ -41,11 +64,11 @@ const Community = () => {
       servers: sectionData?.servers || {
         [activeServer]: {
           title: "Join Our Community",
-          steps: defaultSteps
-        }
+          steps: defaultSteps,
+        },
       },
     },
-    });
+  });
 
   const currentServerFormik = formik.values.servers?.[activeServer] || {};
   const steps = currentServerFormik.steps || [];
@@ -66,7 +89,6 @@ const Community = () => {
   return (
     <FormikProvider value={formik}>
       <div id="community" className="relative min-h-screen">
-        
         {/* 🛠️ Edit Controls */}
         <div className="absolute top-5 right-5 z-[100] flex gap-2">
           {isEditing && !isSectionActive && (
@@ -81,13 +103,19 @@ const Community = () => {
           {isSectionActive && (
             <div className="flex gap-2 bg-black/80 p-2 rounded-2xl backdrop-blur-xl border border-white/10 shadow-2xl">
               <button
-                onClick={() => { disableEditingMode(); formik.resetForm(); }}
+                onClick={() => {
+                  disableEditingMode();
+                  formik.resetForm();
+                }}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all"
               >
                 Cancel
               </button>
               <button
-                onClick={() => { disableEditingMode(); formik.handleSubmit(); }}
+                onClick={() => {
+                  disableEditingMode();
+                  formik.handleSubmit();
+                }}
                 className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all"
               >
                 Save Changes
@@ -98,14 +126,18 @@ const Community = () => {
 
         <div className="flex items-center justify-center py-20">
           <div className="desc w-full flex justify-center flex-col items-center gap-5">
-            
             {/* 🏷️ Title (Per Server) */}
             <div className="flex justify-center items-center">
               <h1
                 key={`title-${activeServer}-${isSectionActive}`}
                 contentEditable={isSectionActive as boolean}
                 suppressContentEditableWarning
-                onBlur={(e) => formik.setFieldValue(`servers.${activeServer}.title`, e.currentTarget.textContent || "")}
+                onBlur={(e) =>
+                  formik.setFieldValue(
+                    `servers.${activeServer}.title`,
+                    e.currentTarget.textContent || "",
+                  )
+                }
                 className={`${editStyle} lg:text-7xl text-5xl font-black font-orbitron text-center relative py-3 flex flex-col justify-center items-center leading-tight`}
                 style={{
                   backgroundImage: theme?.gradient,
@@ -114,7 +146,10 @@ const Community = () => {
                 }}
               >
                 {displayTitle}
-                <span className="my-4 w-[10%] h-[2px] transition-all duration-300" style={{ background: theme.gradient }}></span>
+                <span
+                  className="my-4 w-[10%] h-[2px] transition-all duration-300"
+                  style={{ background: theme.gradient }}
+                ></span>
               </h1>
             </div>
 
@@ -128,7 +163,9 @@ const Community = () => {
                       <div
                         key={`step-${activeServer}-${index}`}
                         className={`group relative p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md transition-all duration-300 flex flex-col h-full ${
-                          isSectionActive ? "ring-2 ring-amber-400/30 shadow-lg" : "hover:bg-white/10"
+                          isSectionActive
+                            ? "ring-2 ring-amber-400/30 shadow-lg"
+                            : "hover:bg-white/10"
                         }`}
                       >
                         {isSectionActive && (
@@ -151,7 +188,12 @@ const Community = () => {
                           <h3
                             contentEditable={isSectionActive as boolean}
                             suppressContentEditableWarning
-                            onBlur={(e) => formik.setFieldValue(`servers.${activeServer}.steps.${index}.title`, e.currentTarget.textContent || "")}
+                            onBlur={(e) =>
+                              formik.setFieldValue(
+                                `servers.${activeServer}.steps.${index}.title`,
+                                e.currentTarget.textContent || "",
+                              )
+                            }
                             className={`text-xl font-orbitron font-bold tracking-tight outline-none ${editStyle}`}
                             style={{ color: theme.color }}
                           >
@@ -162,7 +204,12 @@ const Community = () => {
                         <p
                           contentEditable={isSectionActive as boolean}
                           suppressContentEditableWarning
-                          onBlur={(e) => formik.setFieldValue(`servers.${activeServer}.steps.${index}.description`, e.currentTarget.textContent || "")}
+                          onBlur={(e) =>
+                            formik.setFieldValue(
+                              `servers.${activeServer}.steps.${index}.description`,
+                              e.currentTarget.textContent || "",
+                            )
+                          }
                           className={`text-gray-400 font-roboto leading-relaxed text-sm group-hover:text-white transition-colors outline-none h-full ${editStyle}`}
                         >
                           {step.description}
@@ -173,16 +220,32 @@ const Community = () => {
                     {/* 🚀 Auto-generated IP Card */}
                     <div className="p-6 rounded-3xl bg-white/[0.02] border border-dashed border-white/20 flex flex-col h-full opacity-80">
                       <div className="flex gap-4 items-center mb-4">
-                        <span className="w-10 h-10 flex items-center justify-center rounded-full text-white font-black text-xl shrink-0" style={{background:theme.gradient}}>
+                        <span
+                          className="w-10 h-10 flex items-center justify-center rounded-full text-white font-black text-xl shrink-0"
+                          style={{ background: theme.gradient }}
+                        >
                           {steps.length + 1}
                         </span>
-                        <h3 className="text-xl font-orbitron font-bold" style={{ color: theme.color }}>
+                        <h3
+                          className="text-xl font-orbitron font-bold"
+                          style={{ color: theme.color }}
+                        >
                           Server Info
                         </h3>
                       </div>
                       <p className="text-gray-400 text-sm font-roboto">
-                        Server: <span className="text-white font-bold">{theme.name}</span><br/>
-                        IP: <span className="font-bold tracking-wider" style={{color:theme.color}}>{currentIP}</span>
+                        Server:{" "}
+                        <span className="text-white font-bold">
+                          {theme.name}
+                        </span>
+                        <br />
+                        IP:{" "}
+                        <span
+                          className="font-bold tracking-wider"
+                          style={{ color: theme.color }}
+                        >
+                          {currentIP}
+                        </span>
                       </p>
                     </div>
                   </div>

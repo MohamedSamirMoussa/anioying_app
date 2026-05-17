@@ -2,7 +2,7 @@
 import { themes } from "@/app/hooks/themes";
 import useSectionEditor from "@/app/hooks/useSectionEditor";
 import { setSectionName } from "@/app/libs/redux/features/editSlice";
-import { RootState } from "@/app/libs/redux/store";
+import { AppDispatch, RootState } from "@/app/libs/redux/store";
 import {
   faDownload,
   faMicrophone,
@@ -14,12 +14,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { FieldArray, FormikProvider } from "formik";
+import { getPageContentThunk } from "@/app/libs/redux/features/pageContentSlice";
+import { useEffect } from "react";
 
 const OptionalMods = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const activeTab = useSelector((state: RootState) => state.theme.activeServer);
   const theme = themes[activeTab] || themes["3"];
-
+  useEffect(() => {
+    dispatch(getPageContentThunk("optionalMods"));
+  }, [dispatch]);
   const sectionData = useSelector(
     (state: RootState) => state.pageContent.sectionData["optionalMods"],
   );
@@ -33,9 +37,12 @@ const OptionalMods = () => {
 
   // الوصول لمصفوفة المودات الخاصة بالسيرفر الحالي
   const currentServerMods = formik.values.servers?.[activeTab]?.mods || [];
-  
-  const displayTitle = formik.values.servers?.[activeTab]?.title || "Optional Mods";
-  const displayDesc = formik.values.servers?.[activeTab]?.description || "Enhance your experience with these client-side mods!";
+
+  const displayTitle =
+    formik.values.servers?.[activeTab]?.title || "Optional Mods";
+  const displayDesc =
+    formik.values.servers?.[activeTab]?.description ||
+    "Enhance your experience with these client-side mods!";
 
   const editStyle = isSectionActive
     ? "outline-dashed outline-2 outline-amber-400/60 bg-white/5 rounded-xl transition-all duration-300 px-3 py-1 cursor-text"
@@ -85,7 +92,10 @@ const OptionalMods = () => {
                 contentEditable={isSectionActive as boolean}
                 suppressContentEditableWarning
                 onBlur={(e) =>
-                  formik.setFieldValue(`servers.${activeTab}.title`, e.currentTarget.textContent || "")
+                  formik.setFieldValue(
+                    `servers.${activeTab}.title`,
+                    e.currentTarget.textContent || "",
+                  )
                 }
                 className={`${editStyle} lg:text-7xl text-5xl font-black font-orbitron text-center relative py-3 leading-tight hover:scale-105 inline-block`}
                 style={{
@@ -107,7 +117,10 @@ const OptionalMods = () => {
               contentEditable={isSectionActive as boolean}
               suppressContentEditableWarning
               onBlur={(e) =>
-                formik.setFieldValue(`servers.${activeTab}.description`, e.currentTarget.textContent || "")
+                formik.setFieldValue(
+                  `servers.${activeTab}.description`,
+                  e.currentTarget.textContent || "",
+                )
               }
               className={`text-gray-300 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mt-4 ${editStyle}`}
             >
@@ -142,30 +155,40 @@ const OptionalMods = () => {
                           className="mb-4 inline-flex p-3 rounded-2xl bg-white/5"
                           style={{ color: theme.color }}
                         >
-                          <FontAwesomeIcon icon={index % 2 === 0 ? faMicrophone : faMusic} className="text-2xl" />
+                          <FontAwesomeIcon
+                            icon={index % 2 === 0 ? faMicrophone : faMusic}
+                            className="text-2xl"
+                          />
                         </div>
-                        
+
                         <h2
                           contentEditable={isSectionActive as boolean}
                           suppressContentEditableWarning
                           onBlur={(e) =>
-                            formik.setFieldValue(`servers.${activeTab}.mods.${index}.title`, e.currentTarget.textContent || "")
+                            formik.setFieldValue(
+                              `servers.${activeTab}.mods.${index}.title`,
+                              e.currentTarget.textContent || "",
+                            )
                           }
                           className={`text-2xl font-orbitron font-bold mb-3 block ${editStyle}`}
                           style={{ color: theme.color }}
                         >
                           {mod.title || "Simple Voice Chat"}
                         </h2>
-                        
+
                         <p
                           contentEditable={isSectionActive as boolean}
                           suppressContentEditableWarning
                           onBlur={(e) =>
-                            formik.setFieldValue(`servers.${activeTab}.mods.${index}.description`, e.currentTarget.textContent || "")
+                            formik.setFieldValue(
+                              `servers.${activeTab}.mods.${index}.description`,
+                              e.currentTarget.textContent || "",
+                            )
                           }
                           className={`text-gray-400 text-sm leading-relaxed ${editStyle}`}
                         >
-                          {mod.description || "Adds proximity voice chat to Minecraft. Communicate with nearby players easily and immersively!"}
+                          {mod.description ||
+                            "Adds proximity voice chat to Minecraft. Communicate with nearby players easily and immersively!"}
                         </p>
                       </div>
 
@@ -182,9 +205,14 @@ const OptionalMods = () => {
                             contentEditable={isSectionActive as boolean}
                             suppressContentEditableWarning
                             onBlur={(e) =>
-                              formik.setFieldValue(`servers.${activeTab}.mods.${index}.link.text`, e.currentTarget.textContent || "")
+                              formik.setFieldValue(
+                                `servers.${activeTab}.mods.${index}.link.text`,
+                                e.currentTarget.textContent || "",
+                              )
                             }
-                            className={isSectionActive ? "border-b border-white/40" : ""}
+                            className={
+                              isSectionActive ? "border-b border-white/40" : ""
+                            }
                           >
                             {mod.link?.text || "Download from CurseForge"}
                           </span>
@@ -195,7 +223,10 @@ const OptionalMods = () => {
                             type="text"
                             value={mod.link?.url || ""}
                             onChange={(e) =>
-                              formik.setFieldValue(`servers.${activeTab}.mods.${index}.link.url`, e.target.value)
+                              formik.setFieldValue(
+                                `servers.${activeTab}.mods.${index}.link.url`,
+                                e.target.value,
+                              )
                             }
                             placeholder="CurseForge/Direct URL..."
                             className="w-full text-[10px] p-2 rounded-xl bg-black/40 border border-white/10 text-amber-200 outline-none focus:border-amber-500/50 transition-colors"
@@ -214,7 +245,8 @@ const OptionalMods = () => {
                       onClick={() =>
                         arrayHelpers.push({
                           title: "New Mod Name",
-                          description: "Enter a short description of the mod functions here.",
+                          description:
+                            "Enter a short description of the mod functions here.",
                           link: { text: "Download Now", url: "" },
                         })
                       }
@@ -223,7 +255,9 @@ const OptionalMods = () => {
                       <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-colors">
                         <FontAwesomeIcon icon={faPlus} />
                       </div>
-                      <span className="font-bold font-orbitron tracking-wider">ADD NEW MOD CARD</span>
+                      <span className="font-bold font-orbitron tracking-wider">
+                        ADD NEW MOD CARD
+                      </span>
                     </button>
                   </div>
                 )}

@@ -1,17 +1,20 @@
 "use client";
 import { themes } from "@/app/hooks/themes";
-import { RootState } from "@/app/libs/redux/store";
+import { AppDispatch, RootState } from "@/app/libs/redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setSectionName } from "@/app/libs/redux/features/editSlice";
 import useSectionEditor from "@/app/hooks/useSectionEditor";
 import React from "react";
+import { getPageContentThunk } from "@/app/libs/redux/features/pageContentSlice";
 
 const DiscordChannel = () => {
-  const dispatch = useDispatch();
+  const dispatch:AppDispatch = useDispatch();
 
   const { activeServer } = useSelector((state: RootState) => state.theme);
   const theme = themes[activeServer] || themes["1"];
-
+  React.useEffect(() => {
+    dispatch(getPageContentThunk("discord"));
+  }, [dispatch]);
   const { sectionData } = useSelector((state: RootState) => state.pageContent);
   const section = sectionData?.["discord"];
 
