@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anoing — Minecraft Community Platform
+
+The Next.js front end for Anoing, a full-stack Minecraft community platform. It combines public server content, live server data, leaderboards, community guides, authentication, donations, blogs, notifications, and an administrative content dashboard.
+
+## Related Repository
+
+[Backend API and real-time gateway](https://github.com/MohamedSamirMoussa/BE)
+
+## Features
+
+- Responsive public landing experience
+- Multiple Minecraft server tabs and connection details
+- Real-time server data through Socket.IO
+- Searchable player leaderboard
+- Community setup guides and optional mod information
+- Gallery and blog content
+- Email, Google, and Discord authentication flows
+- Password recovery and email confirmation
+- PayPal donation interface
+- Role-aware dashboard
+- Editable page content and server settings
+- User, donation, gallery, and notification management
+- SEO metadata, sitemap, and robots configuration
+- Redux Toolkit state management with persisted client state
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Redux Toolkit and React Redux
+- Socket.IO Client
+- Axios
+- Tailwind CSS
+- Formik and Yup
+- PayPal React SDK
+- Google OAuth
+- React Hot Toast
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
+- Node.js 20 or later
+- npm
+- A running Anoing backend
+
+### Installation
+
+~~~bash
+git clone https://github.com/MohamedSamirMoussa/anioying_app.git
+cd anioying_app
+npm install
+~~~
+
+Create .env.local:
+
+~~~env
+NEXT_PUBLIC_BACK_END_URI=http://localhost:5000
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=
+~~~
+
+Run the development server:
+
+~~~bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+~~~
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+~~~bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+~~~
 
-## Learn More
+## Main Areas
 
-To learn more about Next.js, take a look at the following resources:
+- Public site: home, server information, leaderboard, gallery, blogs, and community content
+- Authentication: sign-in, registration, confirmation, and password recovery
+- Dashboard: users, servers, donations, gallery, notifications, and editable site content
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Configuration Note
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Values prefixed with NEXT_PUBLIC_ are delivered to the browser. Only place public client identifiers and public URLs in those variables; never store private secrets there.
 
-## Deploy on Vercel
+## Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Mohamed Samir Moussa](https://github.com/MohamedSamirMoussa)
